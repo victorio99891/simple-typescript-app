@@ -14,4 +14,12 @@ export class TaskService {
   static deleteTask(id: string) {
     return axios.delete(API + '/tasks/' + id);
   }
+
+  static getTaskById(id: string) {
+    return axios.get(API + '/tasks/' + id);
+  }
+
+  static toggleTask(task: Task) {
+    return axios.put(API + '/tasks/' + task.id, task);
+  }
 }

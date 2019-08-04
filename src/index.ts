@@ -31,13 +31,13 @@ function addTask() {
     let task: Task = new Task();
 
     TASK_LIST.sort((a, b) => {
-      return a.id > b.id ? 1 : -1;
+      return Number(a.id) > Number(b.id) ? 1 : -1;
     });
 
     if (TASK_LIST[TASK_LIST.length - 1]) {
       task.id = String(Number.parseInt(TASK_LIST[TASK_LIST.length - 1].id) + 1);
     } else {
-      task.id = '0';
+      task.id = '1';
     }
 
     console.log(TASK_LIST);
@@ -67,6 +67,25 @@ function deleteTask(id: string) {
     });
 }
 
+function toggleTask(id: string) {
+  TaskService.getTaskById(id)
+    .then(response => {
+      let taskToEdit: Task = response.data;
+      taskToEdit.isDone = !taskToEdit.isDone;
+      TaskService.toggleTask(taskToEdit)
+        .then(() => {
+          loadTasks();
+        })
+        .catch(err => {
+          alert('Problem with toggling!');
+        });
+    })
+    .catch(err => {
+      loadTasks();
+      alert('Cannot toggle task with id="' + id + '"!\nError: ' + err);
+    });
+}
+
 function loadTasks(): void {
   const container: HTMLElement = document.getElementById('container');
   TASK_LIST.splice(0, TASK_LIST.length);
@@ -89,7 +108,11 @@ function loadTasks(): void {
               'div',
               'task' + task.id,
               'taskContainer',
-              `Task: ${JSON.stringify(task)} <button id="deleteTask${
+              `Task: ${JSON.stringify(task)} <button id="toggleTask${
+                task.id
+              }" class="toggleTaskBtn">${toggleTaskText(
+                task
+              )}</button> <button id="deleteTask${
                 task.id
               }" class="deleteTaskBtn">Delete</button>`
             )
@@ -104,6 +127,14 @@ function loadTasks(): void {
           deleteButton.onclick = () => {
             deleteTask(task.id);
           };
+
+          let toggleButton: HTMLElement = document.getElementById(
+            'toggleTask' + task.id
+          );
+
+          toggleButton.onclick = () => {
+            toggleTask(task.id);
+          };
         });
       }
     })
@@ -116,4 +147,12 @@ function loadTasks(): void {
         `Unfortunetely something went wrong. Try again later! <br/> ${err}`
       );
     });
+}
+
+function toggleTaskText(task: Task): string {
+  if (task.isDone) {
+    return 'Undo!';
+  } else if (!task.isDone) {
+    return 'Do!';
+  }
 }
