@@ -1,6 +1,46 @@
 body {
   font-family: monospace;
-  background: black;
+  background: #353030;
   color: white;
+  font-size: 30px;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+}
+
+#rightContainer {
+  width: 50%;
+  color: rgb(0, 238, 255);
+}
+
+#leftContainer {
+  width: 50%;
+  color: rgb(225, 250, 0);
+}
+
+.deleteTaskBtn {
+  font-size: 30px;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.toggleTaskBtn {
+  font-size: 30px;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.taskContainer {
+  margin: 15px;
+}
+
+#inputTaskLabel {
+  margin: 20px;
+  font-size: 30px;
+}
+
+#addTaskBtn {
   font-size: 30px;
 }

@@ -40,7 +40,6 @@ function addTask() {
       task.id = '1';
     }
 
-    console.log(TASK_LIST);
 
     task.text = inputLabel.value;
     task.isDone = false;
@@ -87,7 +86,7 @@ function toggleTask(id: string) {
 }
 
 function loadTasks(): void {
-  const container: HTMLElement = document.getElementById('container');
+  let container: HTMLElement = document.getElementById('container');
   TASK_LIST.splice(0, TASK_LIST.length);
 
   TaskService.getTasks()
@@ -97,25 +96,39 @@ function loadTasks(): void {
       if (response.data.length == 0) {
         container.innerHTML = 'Task list is empty.';
       } else {
+        container.innerHTML = builder.createHTMLElement(
+          'div',
+          'leftContainer',
+          'undoneTaskContainer',
+          'Undone tasks:'
+        );
+        container.innerHTML += builder.createHTMLElement(
+          'div',
+          'rightContainer',
+          'doneTaskContainer',
+          'Done tasks:'
+        );
+
         response.data.forEach((task: Task) => {
           TASK_LIST.push(task);
 
+          if (task.isDone) {
+            container = document.getElementById('rightContainer');
+          } else if (!task.isDone) {
+            container = document.getElementById('leftContainer');
+          }
+
           container.innerHTML += builder.createHTMLElement(
             'div',
-            '',
-            'subcontainer',
-            builder.createHTMLElement(
-              'div',
-              'task' + task.id,
-              'taskContainer',
-              `Task: ${JSON.stringify(task)} <button id="toggleTask${
-                task.id
-              }" class="toggleTaskBtn">${toggleTaskText(
-                task
-              )}</button> <button id="deleteTask${
-                task.id
-              }" class="deleteTaskBtn">Delete</button>`
-            )
+            'task' + task.id,
+            'taskContainer',
+            `<button id="toggleTask${
+              task.id
+            }" class="toggleTaskBtn">${toggleTaskText(
+              task
+            )}</button> <button id="deleteTask${
+              task.id
+            }" class="deleteTaskBtn">Delete</button> ${task.id}: ${task.text}`
           );
         });
 
